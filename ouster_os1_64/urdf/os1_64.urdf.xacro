@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="os1_64">
+  <xacro:property name="PI" value="3.1415926535897931"/>
+
+  <xacro:macro name="os1_64" params="*origin parent:=base_link name:=ouster prefix:=/os1_cloud_node hz:=10 samples:=512 min_range:=0.8 max_range:=100 noise:=0.008 min_angle_v:=-16.6 max_angle_v:=16.6">
+
+    <joint name="${name}_base_mount_joint" type="fixed">
+      <xacro:insert_block name="origin" /> 
+      <parent link="${parent}"/>
+      <child link="${name}"/>
+    </joint>
+
+    <link name="${name}">
+      <inertial>
+        <mass value="0.425"/>
+        <origin xyz="0 0 0.03675" rpy="0 0 0" />
+        <inertia ixx="0.000308429" ixy="0" ixz="0" 
+                 iyy="0.000308429" iyz="0" izz="0.00034589"/>
+      </inertial>
+      <collision name="base_collision">
+        <origin xyz="0 0 0.03675" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="0.04350" length="0.07350"/>
+        </geometry>
+      </collision>
+      <visual name="base_visual">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://ouster_os1_64/meshes/os1_64.stl"/>
+        </geometry>
+      </visual>
+    </link>
+
+    <gazebo reference="${name}">
+      <sensor type="ray" name="${name}_lidar">
+        <pose>0 0 0 0 0 ${PI}</pose>
+        <visualize>false</visualize>
+        <update_rate>${hz}</update_rate>
+        <ray>
+          <scan>
+            <vertical>
+              <samples>64</samples>
+              <resolution>1</resolution>
+              <min_angle>${min_angle_v*PI/180.0}</min_angle>
+              <max_angle>${max_angle_v*PI/180.0}</max_angle>
+            </vertical>
+            <horizontal>
+              <samples>${samples}</samples>
+              <resolution>1</resolution>
+              <min_angle>-${PI}</min_angle>
+              <max_angle>${PI}</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>${min_range}</min>
+            <max>${max_range}</max>
+            <resolution>0.03</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.0</stddev>
+          </noise>
+        </ray>
+        <plugin name="gazebo_ros_laser_controller" filename="libgazebo_ros_ouster_laser.so">
+          <topicName>${prefix}/points</topicName>
+          <frameName>${name}</frameName>
+          <min_range>${min_range}</min_range>
+          <max_range>${max_range}</max_range>
+          <gaussianNoise>${noise}</gaussianNoise>
+        </plugin>
+      </sensor>
+    </gazebo>
+
+    <link name="${name}_imu"/>
+    <joint name="${name}_imu_joint" type="fixed">
+      <parent link="${name}"/>
+      <child link="${name}_imu"/>
+    </joint>
+
+    <gazebo reference="${name}_imu">
+      <sensor type="imu" name="${name}_imu_sensor">
+        <pose>0 0 0 0 0 0</pose>
+        <always_on>true</always_on>
+        <update_rate>100</update_rate>
+        <visualize>true</visualize>
+        <topic>${prefix}/imu</topic>
+      </sensor>
+    </gazebo>
+
+  </xacro:macro>
+</robot>
