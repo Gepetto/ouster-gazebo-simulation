@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- Modified from the work of Wil Selby (https://github.com/wilselby/ouster_example/blob/master/ouster_description/urdf/OS1-64.urdf.xacro) -->
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="os1_64">
   <xacro:property name="PI" value="3.1415926535897931"/>
 
