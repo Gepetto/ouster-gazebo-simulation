@@ -8,10 +8,10 @@
     <joint name="${name}_base_mount_joint" type="fixed">
       <xacro:insert_block name="origin" /> 
       <parent link="${parent}"/>
-      <child link="${name}"/>
+      <child link="${name}_sensor"/>
     </joint>
 
-    <link name="${name}">
+    <link name="${name}_sensor">
       <inertial>
         <mass value="0.425"/>
         <origin xyz="0 0 0.03675" rpy="0 0 0" />
@@ -27,14 +27,22 @@
       <visual name="base_visual">
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://ouster_os1_64/meshes/os1_64.stl"/>
+          <mesh filename="package://ouster_os1_64/meshes/os1_64.dae" scale="0.001 0.001 0.001" />
         </geometry>
       </visual>
     </link>
 
-    <gazebo reference="${name}">
+    <link name="${name}_lidar">
+      <pose>0 0 0 0 0 ${PI}</pose>
+    </link>
+    <joint name="${name}_lidar_joint" type="fixed">
+      <parent link="${name}_sensor"/>
+      <child link="${name}_lidar"/>
+    </joint>
+
+    <gazebo reference="${name}_lidar">
       <sensor type="ray" name="${name}_lidar">
-        <pose>0 0 0 0 0 ${PI}</pose>
+        <pose>0 0 0 0 0 0</pose>
         <visualize>false</visualize>
         <update_rate>${hz}</update_rate>
         <ray>
@@ -65,7 +73,7 @@
         </ray>
         <plugin name="gazebo_ros_laser_controller" filename="libgazebo_ros_ouster_laser.so">
           <topicName>${prefix}/points</topicName>
-          <frameName>${name}</frameName>
+          <frameName>${name}_lidar</frameName>
           <min_range>${min_range}</min_range>
           <max_range>${max_range}</max_range>
           <gaussianNoise>${noise}</gaussianNoise>
@@ -75,7 +83,7 @@
 
     <link name="${name}_imu"/>
     <joint name="${name}_imu_joint" type="fixed">
-      <parent link="${name}"/>
+      <parent link="${name}_sensor"/>
       <child link="${name}_imu"/>
     </joint>
 
