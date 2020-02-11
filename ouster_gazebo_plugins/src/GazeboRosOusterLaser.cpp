@@ -112,6 +112,7 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     robot_namespace_ = "/";
     if (_sdf->HasElement("robotNamespace")){
         robot_namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>();
+        ROS_INFO("Ouster laser plugin : Robot namespace set to %s", robot_namespace_);
     }
 
     if (!_sdf->HasElement("frameName")){
@@ -120,6 +121,7 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     }
     else{
         frame_name_ = _sdf->GetElement("frameName")->Get<std::string>();
+        ROS_INFO("Ouster laser plugin : Frame name set to %s", frame_name_);
     }
 
     if (!_sdf->HasElement("min_range")){
@@ -128,6 +130,7 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     }
     else{
         min_range_ = _sdf->GetElement("min_range")->Get<double>();
+        ROS_INFO("Ouster laser plugin : Min range set to %f", min_range_);
     }
 
     if (!_sdf->HasElement("max_range")){
@@ -136,6 +139,7 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     }
     else{
         max_range_ = _sdf->GetElement("max_range")->Get<double>();
+        ROS_INFO("Ouster laser plugin : Max range set to %f", max_range_);
     }
 
     if (!_sdf->HasElement("topicName")){
@@ -144,6 +148,7 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     }
     else{
         topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
+        ROS_INFO("Ouster laser plugin : Topic name set to %s", topic_name_);
     }
 
     if (!_sdf->HasElement("gaussianNoise")){
@@ -152,6 +157,7 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     }
     else{
         gaussian_noise_ = _sdf->GetElement("gaussianNoise")->Get<double>();
+        ROS_INFO("Ouster laser plugin : gaussian Noise set to %f", gaussian_noise_);
     }
 
     // Make sure the ROS node for Gazebo has already been initialized
