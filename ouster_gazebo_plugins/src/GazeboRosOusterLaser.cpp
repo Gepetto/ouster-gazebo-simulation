@@ -112,7 +112,7 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     robot_namespace_ = "/";
     if (_sdf->HasElement("robotNamespace")){
         robot_namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>();
-        ROS_INFO("Ouster laser plugin : Robot namespace set to %s", robot_namespace_);
+        ROS_INFO("Ouster laser plugin : Robot namespace set to %s", robot_namespace_.c_str());
     }
 
     if (!_sdf->HasElement("frameName")){
@@ -121,7 +121,7 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     }
     else{
         frame_name_ = _sdf->GetElement("frameName")->Get<std::string>();
-        ROS_INFO("Ouster laser plugin : Frame name set to %s", frame_name_);
+        ROS_INFO("Ouster laser plugin : Frame name set to %s", frame_name_.c_str());
     }
 
     if (!_sdf->HasElement("min_range")){
@@ -148,7 +148,7 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     }
     else{
         topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
-        ROS_INFO("Ouster laser plugin : Topic name set to %s", topic_name_);
+        ROS_INFO("Ouster laser plugin : Topic name set to %s", topic_name_.c_str());
     }
 
     if (!_sdf->HasElement("gaussianNoise")){
