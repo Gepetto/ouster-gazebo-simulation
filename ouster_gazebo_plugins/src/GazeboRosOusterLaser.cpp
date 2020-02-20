@@ -152,12 +152,15 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     }
 
     if (!_sdf->HasElement("gaussianNoise")){
-        ROS_INFO("Ouster laser plugin missing <gaussianNoise>, defaults to 0.0");
+        ROS_INFO("Ouster laser plugin missing <gaussianNoise>, defaults to 0.0, using noise generation based on datasheet");
         gaussian_noise_ = 0;
     }
     else{
         gaussian_noise_ = _sdf->GetElement("gaussianNoise")->Get<double>();
-        ROS_INFO("Ouster laser plugin : gaussian Noise set to %f", gaussian_noise_);
+        if((gaussian_noise_ == 0.0) // shouldn't it be compared to epsilon ?
+            ROS_INFO("Ouster laser plugin : gaussian Noise set to 0, using noise generation based on datasheet");
+        else
+            ROS_INFO("Ouster laser plugin : gaussian Noise set to %f", gaussian_noise_);
     }
 
     // Make sure the ROS node for Gazebo has already been initialized
@@ -306,7 +309,7 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
             }
 
             // Noise
-            if (gaussian_noise_ != 0.0){
+            if (gaussian_noise_ != 0.0){ // shouldn't it be compared to epsilon ?
                 r += gaussianKernel(0, gaussian_noise_);
             }
             else {
