@@ -159,6 +159,8 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
         gaussian_noise_ = _sdf->GetElement("gaussianNoise")->Get<double>();
         if(gaussian_noise_ == 0.0) // shouldn't it be compared to epsilon ?
             ROS_INFO("Ouster laser plugin : gaussian Noise set to 0, using noise generation based on datasheet");
+        else if(gaussian_noise_ == -1.0)
+            ROS_INFO("Ouster laser plugin : gaussian Noise unset");
         else
             ROS_INFO("Ouster laser plugin : gaussian Noise set to %f", gaussian_noise_);
     }
@@ -312,7 +314,7 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
             if (gaussian_noise_ != 0.0){ // shouldn't it be compared to epsilon ?
                 r += gaussianKernel(0, gaussian_noise_);
             }
-            else {
+            else if (gaussian_noise_ != -1.0){
                 // Noise set by the datasheet
                 double g_noise = gaussianKernel(0, 1.);
                 if(r <= 2.){
