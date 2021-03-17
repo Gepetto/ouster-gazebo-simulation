@@ -311,7 +311,7 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
             }
 
             // Noise
-            if (gaussian_noise_ != 0.0){ // shouldn't it be compared to epsilon ?
+            if (gaussian_noise_ > 0.0){ // shouldn't it be compared to epsilon ?
                 r += gaussianKernel(0, gaussian_noise_);
             }
             else if (gaussian_noise_ != -1.0){
