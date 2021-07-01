@@ -109,6 +109,8 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
         gzthrow("GazeboRosOuster" << STR_Gpu << "Laser controller requires a " << STR_Gpu << "Ray Sensor as its parent.");
     }
 
+    ROS_INFO("Ouster laser plugin : Getting the %sRay sensor parameters.", STR_Gpu);
+
     robot_namespace_ = "/";
     if (_sdf->HasElement("robotNamespace")){
         robot_namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>();
@@ -159,6 +161,8 @@ void GazeboRosOusterLaser::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
         gaussian_noise_ = _sdf->GetElement("gaussianNoise")->Get<double>();
         if(gaussian_noise_ == 0.0) // shouldn't it be compared to epsilon ?
             ROS_INFO("Ouster laser plugin : gaussian Noise set to 0, using noise generation based on datasheet");
+        else if(gaussian_noise_ == -1.0)
+            ROS_INFO("Ouster laser plugin : gaussian Noise unset");
         else
             ROS_INFO("Ouster laser plugin : gaussian Noise set to %f", gaussian_noise_);
     }
@@ -304,15 +308,12 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
 
             // Range
             double r = _msg->scan().ranges(i + j * rangeCount);
-            if ((MIN_RANGE >= r) || (r >= MAX_RANGE)){
-                continue;
-            }
 
             // Noise
-            if (gaussian_noise_ != 0.0){ // shouldn't it be compared to epsilon ?
+            if (gaussian_noise_ > 0.0){ // shouldn't it be compared to epsilon ?
                 r += gaussianKernel(0, gaussian_noise_);
             }
-            else {
+            else if (gaussian_noise_ != -1.0){
                 // Noise set by the datasheet
                 double g_noise = gaussianKernel(0, 1.);
                 if(r <= 2.){
@@ -349,14 +350,29 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
 
             // pAngle is rotated by yAngle:
             if ((MIN_RANGE < r) && (r < MAX_RANGE)){
-                *((float*)(ptr + 0)) = r * cos(pAngle) * cos(yAngle);
-                *((float*)(ptr + 4)) = r * cos(pAngle) * sin(yAngle);
+                *((float*)(ptr + 0)) = r * cos(pAngle) * cos(yAngle); // x
+                *((float*)(ptr + 4)) = r * cos(pAngle) * sin(yAngle); // y
 #if GAZEBO_MAJOR_VERSION > 2
-                *((float*)(ptr + 8)) = r * sin(pAngle);
+                *((float*)(ptr + 8)) = r * sin(pAngle); // z
 #else
-                *((float*)(ptr + 8)) = -r * sin(pAngle);
+                *((float*)(ptr + 8)) = -r * sin(pAngle); // z
 #endif
-                *((float*)(ptr + 16)) = intensity;
+                *((float*)(ptr + 16)) = intensity; // I
+#if GAZEBO_MAJOR_VERSION > 2
+                *((uint16_t*)(ptr + 20)) = j; // ring
+#else
+                *((uint16_t*)(ptr + 20)) = verticalRangeCount - 1 - j; // ring
+#endif
+                ptr += POINT_STEP;
+            } else { //if out of range, create a "NULL" point to keep the organization
+                *((float*)(ptr + 0)) = 0.; // x
+                *((float*)(ptr + 4)) = 0.; // y
+#if GAZEBO_MAJOR_VERSION > 2
+                *((float*)(ptr + 8)) = 0.; // z
+#else
+                *((float*)(ptr + 8)) = 0.; // z
+#endif
+                *((float*)(ptr + 16)) = 0.; // I
 #if GAZEBO_MAJOR_VERSION > 2
                 *((uint16_t*)(ptr + 20)) = j; // ring
 #else
