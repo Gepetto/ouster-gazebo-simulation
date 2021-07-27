@@ -9,6 +9,9 @@ set(PROJECT_URL "https://github.com/${PROJECT_NAMESPACE}/${PROJECT_NAME}")
 # JRL-cmakemodule setup
 include(cmake/base.cmake)
 
+# Disable -Werror on Unix for now
+set(CXX_DISABLE_WERROR ON)
+
 # Project definition
 COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
 project(${PROJECT_NAME} ${PROJECT_ARGS})
