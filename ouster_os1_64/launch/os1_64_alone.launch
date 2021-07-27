@@ -43,7 +43,7 @@
   </group>
 
   <!-- Spawner for the sensor/robot -->
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(arg robot_model)'"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(arg robot_model)'"/>
   <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -x 0 -y 0 -z 0 -model robot"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
     <param name="publish_frequency" type="double" value="30.0" />
