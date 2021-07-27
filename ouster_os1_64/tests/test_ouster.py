@@ -7,7 +7,7 @@ import rosunit
 
 from gazebo_msgs.srv import SpawnModel
 from geometry_msgs.msg import Pose, Point
-from sensor_msgs.point_cloud2 import PointCloud2
+from sensor_msgs.point_cloud2 import PointCloud2, read_points_list
 
 boxy = """<robot name="boxy">
   <link name="boxy">
@@ -43,6 +43,10 @@ class OusterTest(unittest.TestCase):
         # The scene is the same: they should provide the same data
         self.assertEqual(msg1.data, msg2.data)
 
+        # And there should be no interesting point to see
+        points = [pt for pt in read_points_list(msg2) if pt.x != 0]
+        self.assertEqual(len(points), 0)
+
         # Spawn a cube
         rospy.wait_for_service("gazebo/spawn_sdf_model")
         spawn_sdf_model = rospy.ServiceProxy("gazebo/spawn_sdf_model", SpawnModel)
@@ -57,6 +61,22 @@ class OusterTest(unittest.TestCase):
 
         # This time, the scene has changed: the data should be different
         self.assertNotEqual(msg2.data, msg3.data)
+
+        # And there should be many interesting point to see
+        points = [pt for pt in read_points_list(msg3) if pt.x != 0]
+        self.assertGreater(len(points), 1_000)
+
+        # Finally, ensure those points are close enough to the cube
+        margin = 0.05
+        xs = [pt.x for pt in points]
+        ys = [pt.y for pt in points]
+        zs = [pt.z for pt in points]
+        self.assertGreater(min(xs), 0.5 - margin)
+        self.assertGreater(min(ys), 0.5 - margin)
+        self.assertGreater(min(zs), 0 - margin)
+        self.assertLess(max(xs), 1.5 + margin)
+        self.assertLess(max(ys), 1.5 + margin)
+        self.assertLess(max(zs), 1 + margin)
 
 
 if __name__ == '__main__':
