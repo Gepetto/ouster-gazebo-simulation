@@ -22,7 +22,7 @@
 
 
     <joint name="${name}_joint" type="fixed">
-      <xacro:insert_block name="origin" /> 
+      <xacro:insert_block name="origin" />
       <parent link="${parent}_link"/>
       <child link="${name}_sensor"/>
     </joint>
@@ -31,7 +31,7 @@
       <inertial>
         <mass value="0.425"/>
         <origin xyz="0 0 0.03675" rpy="0 0 0" />
-        <inertia ixx="0.000308429" ixy="0" ixz="0" 
+        <inertia ixx="0.000308429" ixy="0" ixz="0"
                  iyy="0.000308429" iyz="0" izz="0.00034589"/>
       </inertial>
       <collision name="lidar_collision">
@@ -82,9 +82,7 @@
             <resolution>0.03</resolution>
           </range>
           <noise>
-            <type>gaussian</type>
-            <mean>0.0</mean>
-            <stddev>0.0</stddev>
+            <type>none</type>
           </noise>
         </ray>
         <plugin name="gazebo_ros_laser_controller" filename="libgazebo_ros_ouster_${gpu_str}laser.so">
@@ -111,7 +109,7 @@
         <visualize>true</visualize>
         <topic>${prefix}/imu</topic>
       </sensor>
-    </gazebo>  
+    </gazebo>
 
   </xacro:macro>
 </robot>
