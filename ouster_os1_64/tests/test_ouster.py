@@ -6,22 +6,21 @@ import rospy
 import rosunit
 
 from gazebo_msgs.srv import SpawnModel
-from geometry_msgs.msg import Pose, Point
 from sensor_msgs.point_cloud2 import PointCloud2, read_points_list
 
 boxy = """<robot name="boxy">
   <link name="boxy">
     <inertial>
-      <origin xyz="0 0 0" />
+      <origin xyz="1 1 0" />
       <mass value="1" />
       <inertia ixx="1" ixy="1" ixz="1" iyy="1" iyz="1" izz="1" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" />
+      <origin xyz="1 1 0" />
       <geometry><box size="1 1 1" /></geometry>
     </visual>
     <collision>
-      <origin xyz="0 0 0" />
+      <origin xyz="1 1 0" />
       <geometry><box size="1 1 1" /></geometry>
     </collision>
   </link>
@@ -50,13 +49,8 @@ class OusterTest(unittest.TestCase):
         # Spawn a cube
         rospy.wait_for_service("gazebo/spawn_sdf_model")
         spawn_sdf_model = rospy.ServiceProxy("gazebo/spawn_sdf_model", SpawnModel)
-        spawn_sdf_model(
-            model_name='boxy',
-            model_xml=boxy,
-            robot_namespace='/boxy',
-            initial_pose=Pose(position=Point(1, 1, 0)),
-            reference_frame='world',
-        )
+        spawn_sdf_model(model_name='boxy', model_xml=boxy, robot_namespace='/boxy', reference_frame='world')
+
         msg3 = rospy.wait_for_message("/os1_cloud_node/points", PointCloud2, timeout=1)
 
         # This time, the scene has changed: the data should be different
