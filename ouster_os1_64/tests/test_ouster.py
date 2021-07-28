@@ -58,7 +58,7 @@ class OusterTest(unittest.TestCase):
 
         # And there should be many interesting point to see
         points = [pt for pt in read_points_list(msg3) if pt.x != 0]
-        self.assertGreater(len(points), 1_000)
+        self.assertGreater(len(points), 1000)
 
         # Finally, ensure those points are close enough to the cube
         margin = 0.05
