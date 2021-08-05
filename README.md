@@ -22,3 +22,27 @@ If you forget to disable the GPU acceleration (see note 2 below) using an unadap
 > ***NOTE 1:*** To install a up-to-date package from the OSRF apt repository, you can follow , following [this guide](http://gazebosim.org/tutorials?tut=install_ubuntu) (replacing <code>sudo apt-get install <b>gazebo11</b></code> with the wanted version of `Gazebo`).
 
 > ***NOTE 2:*** To disable GPU acceleration you can use the `gpu` parameter of the `macro` when adding the lidar to your `Xacro` model (setting it to `false` will disable the GPU acceleration).
+
+## Quickstart with catkin
+
+```bash
+mkdir ws
+mkdir ws/src
+cd ws/src
+git clone --recursive https://github.com/gepetto/ouster-gazebo-simulation.git
+cd ..
+catkin_init_workspace
+catkin build
+catkin test
+```
+## Quickstart without catkin
+
+```bash
+git clone --recursive https://github.com/gepetto/ouster-gazebo-simulation.git
+mkdir ouster-gazebo-simulation/build
+cd ouster-gazebo-simulation/build
+cmake ..
+make
+make test
+make install
+```
