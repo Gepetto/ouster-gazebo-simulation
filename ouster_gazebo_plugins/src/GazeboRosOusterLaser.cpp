@@ -70,7 +70,7 @@ GZ_REGISTER_SENSOR_PLUGIN(GazeboRosOusterLaser)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constructor
-GazeboRosOusterLaser::GazeboRosOusterLaser() : nh_(NULL), gaussian_noise_(0), min_range_(0), max_range_(0)
+GazeboRosOusterLaser::GazeboRosOusterLaser() : nh_(NULL), min_range_(0), max_range_(0), gaussian_noise_(0)
 {
 }
 
@@ -242,7 +242,7 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
     const double maxRange = parent_ray_sensor_->RangeMax();
     const double minRange = parent_ray_sensor_->RangeMin();
 
-    const int rayCount = parent_ray_sensor_->RayCount();
+    //const int rayCount = parent_ray_sensor_->RayCount();
     const int rangeCount = parent_ray_sensor_->RangeCount();
 
     const int verticalRayCount = parent_ray_sensor_->VerticalRayCount();
@@ -257,7 +257,7 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
     const double maxRange = parent_ray_sensor_->GetRangeMax();
     const double minRange = parent_ray_sensor_->GetRangeMin();
 
-    const int rayCount = parent_ray_sensor_->GetRayCount();
+    //const int rayCount = parent_ray_sensor_->GetRayCount();
     const int rangeCount = parent_ray_sensor_->GetRangeCount();
 
     const int verticalRayCount = parent_ray_sensor_->GetVerticalRayCount();
@@ -350,18 +350,18 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
 
             // pAngle is rotated by yAngle:
             if ((MIN_RANGE < r) && (r < MAX_RANGE)){
-                *((float*)(ptr + 0)) = r * cos(pAngle) * cos(yAngle); // x
-                *((float*)(ptr + 4)) = r * cos(pAngle) * sin(yAngle); // y
+                *((float*)(ptr + 0)) = (float)(r * cos(pAngle) * cos(yAngle)); // x
+                *((float*)(ptr + 4)) = (float)(r * cos(pAngle) * sin(yAngle)); // y
 #if GAZEBO_MAJOR_VERSION > 2
-                *((float*)(ptr + 8)) = r * sin(pAngle); // z
+                *((float*)(ptr + 8)) = (float)(r * sin(pAngle)); // z
 #else
-                *((float*)(ptr + 8)) = -r * sin(pAngle); // z
+                *((float*)(ptr + 8)) = (float)(-r * sin(pAngle)); // z
 #endif
-                *((float*)(ptr + 16)) = intensity; // I
+                *((float*)(ptr + 16)) = (float) intensity; // I
 #if GAZEBO_MAJOR_VERSION > 2
-                *((uint16_t*)(ptr + 20)) = j; // ring
+                *((uint16_t*)(ptr + 20)) = (uint16_t) j; // ring
 #else
-                *((uint16_t*)(ptr + 20)) = verticalRangeCount - 1 - j; // ring
+                *((uint16_t*)(ptr + 20)) = (uint16_t) verticalRangeCount - 1 - j; // ring
 #endif
                 ptr += POINT_STEP;
             } else { //if out of range, create a "NULL" point to keep the organization
@@ -374,9 +374,9 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
 #endif
                 *((float*)(ptr + 16)) = 0.; // I
 #if GAZEBO_MAJOR_VERSION > 2
-                *((uint16_t*)(ptr + 20)) = j; // ring
+                *((uint16_t*)(ptr + 20)) = (uint16_t) j; // ring
 #else
-                *((uint16_t*)(ptr + 20)) = verticalRangeCount - 1 - j; // ring
+                *((uint16_t*)(ptr + 20)) = (uint16_t) (verticalRangeCount - 1 - j); // ring
 #endif
                 ptr += POINT_STEP;
             }
@@ -385,7 +385,7 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg){
 
     // Populate message with number of valid points
     msg.point_step = POINT_STEP;
-    msg.row_step = ptr - msg.data.data();
+    msg.row_step = (uint32_t) (ptr - msg.data.data());
     msg.height = 1;
     msg.width = msg.row_step / POINT_STEP;
     msg.is_bigendian = false;
