@@ -1,9 +1,9 @@
 # Ouster gazebo simulation
 
-
 [![Pipeline status](https://gitlab.laas.fr/gepetto/ouster-gazebo-simulation/badges/master/pipeline.svg)](https://gitlab.laas.fr/gepetto/ouster-gazebo-simulation/commits/master)
-[![Coverage report](https://gitlab.laas.fr/gepetto/ouster-gazebo-simulation/badges/master/coverage.svg?job=doc-coverage)](http://projects.laas.fr/gepetto/doc/gepetto/ouster-gazebo-simulation/master/coverage/)
-
+[![Coverage report](https://gitlab.laas.fr/gepetto/ouster-gazebo-simulation/badges/master/coverage.svg?job=doc-coverage)](https://gepettoweb.laas.fr/doc/gepetto/ouster-gazebo-simulation/master/coverage/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/gepetto/ouster-gazebo-simulation/master.svg)](https://results.pre-commit.ci/latest/github/gepetto/ouster-gazebo-simulation)
 
 package for the simulation of the Ouster OS1-64 with ros and gazebo.
 

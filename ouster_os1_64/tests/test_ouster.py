@@ -30,7 +30,7 @@ boxy = """<robot name="boxy">
 
 class OusterTest(unittest.TestCase):
     def test_insert_cube(self):
-        rospy.init_node('ouster_test_node', anonymous=True)
+        rospy.init_node("ouster_test_node", anonymous=True)
 
         # Get 2 point clouds
         msg1 = rospy.wait_for_message("/os1_cloud_node/points", PointCloud2, timeout=30)
@@ -49,7 +49,12 @@ class OusterTest(unittest.TestCase):
         # Spawn a cube
         rospy.wait_for_service("gazebo/spawn_sdf_model")
         spawn_sdf_model = rospy.ServiceProxy("gazebo/spawn_sdf_model", SpawnModel)
-        spawn_sdf_model(model_name='boxy', model_xml=boxy, robot_namespace='/boxy', reference_frame='world')
+        spawn_sdf_model(
+            model_name="boxy",
+            model_xml=boxy,
+            robot_namespace="/boxy",
+            reference_frame="world",
+        )
 
         msg3 = rospy.wait_for_message("/os1_cloud_node/points", PointCloud2, timeout=1)
 
@@ -73,5 +78,5 @@ class OusterTest(unittest.TestCase):
         self.assertLess(max(zs), 1 + margin)
 
 
-if __name__ == '__main__':
-    rosunit.unitrun('ouster_os1_64', 'test_ouster', OusterTest)
+if __name__ == "__main__":
+    rosunit.unitrun("ouster_os1_64", "test_ouster", OusterTest)
