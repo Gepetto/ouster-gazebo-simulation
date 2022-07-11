@@ -31,7 +31,6 @@ mkdir ws/src
 cd ws/src
 git clone --recursive https://github.com/gepetto/ouster-gazebo-simulation.git
 cd ..
-catkin_init_workspace
 catkin build
 catkin test
 ```
