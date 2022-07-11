@@ -6,6 +6,8 @@ set(PROJECT_NAME ouster-gazebo-simulation)
 set(PROJECT_DESCRIPTION "package for the simulation of the Ouster OS1-64 with ros and gazebo.")
 set(PROJECT_URL "https://github.com/${PROJECT_NAMESPACE}/${PROJECT_NAME}")
 
+set(CUSTOM_HEADER_DIR ${PROJECT_NAME})
+
 # JRL-cmakemodule setup
 include(cmake/base.cmake)
 
