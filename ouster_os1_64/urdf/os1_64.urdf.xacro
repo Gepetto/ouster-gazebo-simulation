@@ -82,7 +82,9 @@
             <resolution>0.03</resolution>
           </range>
           <noise>
-            <type>none</type>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.000000000001</stddev>
           </noise>
         </ray>
         <plugin name="gazebo_ros_laser_controller" filename="libgazebo_ros_ouster_${gpu_str}laser.so">
