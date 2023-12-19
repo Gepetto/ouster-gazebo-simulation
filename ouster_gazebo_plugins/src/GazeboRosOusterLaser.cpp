@@ -380,7 +380,7 @@ void GazeboRosOusterLaser::OnScan(ConstLaserScanStampedPtr& _msg) {
 #if GAZEBO_MAJOR_VERSION > 2
         *((float*)(ptr + 8)) = 0.;  // z
 #else
-        *((float*)(ptr + 8)) = 0.;                 // z
+        *((float*)(ptr + 8)) = 0.;  // z
 #endif
         *((float*)(ptr + 16)) = 0.;  // I
 #if GAZEBO_MAJOR_VERSION > 2
